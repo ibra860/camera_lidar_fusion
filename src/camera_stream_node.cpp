@@ -1,69 +1,62 @@
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/image.hpp>
+#include <image_transport/image_transport.hpp>
 #include <opencv2/opencv.hpp>
 #include <cv_bridge/cv_bridge.h>
-#include <memory>
 
-class CameraStreamNode : public rclcpp::Node {
+class CameraStreamNode : public rclcpp::Node
+{
 public:
     CameraStreamNode()
-        : Node("camera_stream_node") {
-        
-        // Create publishers and subscribers
-        image_publisher_ = this->create_publisher<sensor_msgs::msg::Image>("/camera_stream", 5); //image output
-        RCLCPP_INFO(this->get_logger(), "Camera stream node has been started.");
-        
+        : Node("camera_stream_node")
+    {
+        // Create an image publisher
+        image_publisher_ = image_transport::create_publisher(this, "/camera/image_raw");
 
-    }
-
-
-private:
-
-    rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr image_publisher_;
-
-    void publish_image() {
-        cv::VideoCapture cap(2);
-        if (!cap.isOpened()) {
-            RCLCPP_ERROR(this->get_logger(), "Failed to open camera.");
+        // Open the camera (camera index 0 for default camera)
+        cap_.open(2); 
+        if (!cap_.isOpened())
+        {
+            RCLCPP_ERROR(this->get_logger(), "Failed to open the camera.");
+            rclcpp::shutdown();
             return;
         }
-        /*
-        by : Ibrahim
-        This comment must not be removed. 
-        For some reason, if it was removed compilation fails. and produces an unknown error.
-        
-        */
-        cv::Mat frame;
-        sensor_msgs::msg::Image::UniquePtr msg = std::make_unique<sensor_msgs::msg::Image>();
-        rclcpp::Rate loop_rate(10);
 
-        while (rclcpp::ok()) {
-            cap >> frame;
-            if (frame.empty()) {
-                RCLCPP_ERROR(this->get_logger(), "Failed to capture frame.");
-                break;
-            }
 
-            msg->header.stamp = this->now();
-            msg->header.frame_id = "camera_link";
-            msg->height = frame.rows;
-            msg->width = frame.cols;
-            msg->encoding = "rgb8";
-            msg->is_bigendian = false;
-            msg->step = frame.cols * frame.elemSize();
-            size_t size = msg->step * frame.rows;
-            msg->data.resize(size);
-            memcpy(&msg->data[0], frame.data, size);
+        RCLCPP_INFO(this->get_logger(), "Camera stream node started.");
 
-            image_publisher_->publish(std::move(msg));
-            loop_rate.sleep();
-        }
+        // Set a timer to periodically capture and publish frames
+        timer_ = this->create_wall_timer(
+            std::chrono::milliseconds(100), // Approximately 30 FPS
+            std::bind(&CameraStreamNode::publishFrame, this));
     }
 
+private:
+    void publishFrame()
+    {
+        cv::Mat frame;
+        cap_ >> frame; // Capture a frame
+
+        if (frame.empty())
+        {
+            RCLCPP_WARN(this->get_logger(), "Captured empty frame, skipping...");
+            return;
+        }
+
+        // Convert the frame to a ROS Image message
+        auto msg = cv_bridge::CvImage(std_msgs::msg::Header(), "bgr8", frame).toImageMsg();
+        msg->header.stamp = this->now();
+
+        // Publish the image
+        image_publisher_.publish(msg);
+    }
+
+    image_transport::Publisher image_publisher_;
+    cv::VideoCapture cap_;
+    rclcpp::TimerBase::SharedPtr timer_;
 };
 
-
-int main(int argc, char * argv[])
+int main(int argc, char *argv[])
 {
     rclcpp::init(argc, argv);
     rclcpp::spin(std::make_shared<CameraStreamNode>());

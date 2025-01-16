@@ -13,6 +13,7 @@ find_package(sensor_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(OpenCV REQUIRED)
+find_package(image_transport REQUIRED)
 
 # Add executable
 add_executable(pointcloud_rgb_transform src/fusion_node.cpp)
@@ -29,6 +30,7 @@ ament_target_dependencies(camera_stream_node
   rclcpp
   sensor_msgs
   cv_bridge
+  image_transport
 )
 
 # Include directories
