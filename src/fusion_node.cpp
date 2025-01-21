@@ -19,12 +19,12 @@ public:
         : Node("sensor_fusion_node") {
         
         // Create publishers and subscribers
-        pointcloud_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/colored_point", 5); //pointcloud2 output
+        pointcloud_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/colored_point", 10); //pointcloud2 output
         
-        pc_sub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::PointCloud2>>(this, "/simple_drone/scan"); //pointcloud2
-        image_sub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::Image>>(this, "/simple_drone/front/image_raw"); //image
+        pc_sub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::PointCloud2>>(this, "/iv_points"); //pointcloud2
+        image_sub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::Image>>(this, "/camera/image_raw"); //image
 
-        sync_ = std::make_shared<message_filters::Synchronizer<SyncPolicy>>(SyncPolicy(10), *pc_sub_, *image_sub_);
+        sync_ = std::make_shared<message_filters::Synchronizer<SyncPolicy>>(SyncPolicy(30), *pc_sub_, *image_sub_);
         sync_->registerCallback(std::bind(&SensorFusionNode::synchronized_callback, this, std::placeholders::_1, std::placeholders::_2));
         RCLCPP_INFO(this->get_logger(), "Sensor fusion node has been started.");
     }
@@ -40,6 +40,7 @@ private:
 void synchronized_callback(
     const sensor_msgs::msg::PointCloud2::ConstSharedPtr& pointcloud_msg,
     const sensor_msgs::msg::Image::ConstSharedPtr& image_msg) {
+    std::cout << "Received synchronized messages." << std::endl;
     // Convert ROS image message to OpenCV
     cv::Mat latest_image = cv_bridge::toCvCopy(image_msg, "bgr8")->image;
 
@@ -51,7 +52,7 @@ void synchronized_callback(
 
     for (const auto& point : cloud->points) {
         int u, v;
-        pcl2pxl(point.x, point.y, point.z, u, v);
+        pcl2pxl(point.z, point.y, point.x, u, v);
 
         if (u >= 0 && u < latest_image.cols && v >= 0 && v < latest_image.rows) {
             cv::Vec3b color_bgr = latest_image.at<cv::Vec3b>(v, u);
@@ -82,18 +83,18 @@ void synchronized_callback(
 
     void pcl2pxl(double x, double y, double z, int& u, int& v) {
         // Camera intrinsic parameters
-        double fx = 71.82582983959233;
-        double fy = 71.82582983959233;
-        double cx = 320.5;
-        double cy = 240.5;
+        double fx = 1397.5987188011652;
+        double fy = 1451.1335161290667;
+        double cx = 648.7598337609973;
+        double cy = 395.5466960913012;
 
         // Extrinsic parameters
         Eigen::Matrix3d R_lc;
-        R_lc << 0, -1, 0,
+        R_lc << 0, 1, 0,
                 0, 0, -1,
                 1, 0, 0;
 
-        Eigen::Vector3d t(0.0, 0.0, -0.05);
+        Eigen::Vector3d t(0.0, 0.0, 0.05);
         Eigen::Vector3d P_l(x, y, z);
         Eigen::Vector3d P_c = R_lc * (P_l + t);
 
