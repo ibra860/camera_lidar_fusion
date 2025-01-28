@@ -19,7 +19,7 @@ public:
             "/iv_points", 10, std::bind(&CameraStreamNode::callback, this, std::placeholders::_1));
 
         // Open the camera (camera index 0 for default camera)
-        cap_.open(2); 
+        cap_.open("/dev/video42"); 
         if (!cap_.isOpened())
         {
             RCLCPP_ERROR(this->get_logger(), "Failed to open the camera.");
