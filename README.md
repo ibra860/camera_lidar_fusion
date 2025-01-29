@@ -1,4 +1,1 @@
-#TO DO:
-- Create Header files for better readability for Transform node.
-- Create parameters files for gloabl usage.
-- Create intrinsic calibration for the camera.
+This is a ROS2 Humble pkg, to colorize the pointclouds using LiDAR and Camera. Tested in Real and Simulated environment
