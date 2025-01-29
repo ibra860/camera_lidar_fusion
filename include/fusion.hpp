@@ -27,7 +27,7 @@ public:
         sync_ = std::make_shared<message_filters::Synchronizer<SyncPolicy>>(SyncPolicy(30), *pc_sub_, *image_sub_);
         sync_->registerCallback(std::bind(&SensorFusionNode::synchronized_callback, this, std::placeholders::_1, std::placeholders::_2));
         RCLCPP_INFO(this->get_logger(), "Sensor fusion node has been started.");
-    }
+    }    
 
 private:
     using SyncPolicy = message_filters::sync_policies::ApproximateTime<sensor_msgs::msg::PointCloud2, sensor_msgs::msg::Image>;
@@ -37,6 +37,30 @@ private:
     std::shared_ptr<message_filters::Synchronizer<SyncPolicy>> sync_;
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pointcloud_publisher_;
 
+
+
+void convert_pointclouds_to_rgb(double x, double y, double z, int& u, int& v) {
+        // Camera intrinsic parameters
+        double fx = 1527.58;  //focal_length in x
+        double fy = 1550.17;  //focal_length in y;
+        double cx = 970.83; //CX
+        double cy = 731.92; //CY
+
+        // Extrinsic parameters
+        Eigen::Matrix3d R_lc;
+        R_lc << 0, 1, 0,
+                0, 0, -1,
+                1, 0, 0;
+
+        Eigen::Vector3d t(0.0, 0.0, 0.05);
+        Eigen::Vector3d P_l(x, y, z);
+        Eigen::Vector3d P_c = R_lc * (P_l + t);
+
+        // Projection
+        u = static_cast<int>((fx * P_c[0] / P_c[2]) + cx);
+        v = static_cast<int>((fy * P_c[1] / P_c[2]) + cy);
+    }
+    
 void synchronized_callback(
     const sensor_msgs::msg::PointCloud2::ConstSharedPtr& pointcloud_msg,
     const sensor_msgs::msg::Image::ConstSharedPtr& image_msg) {
@@ -52,7 +76,7 @@ void synchronized_callback(
 
     for (const auto& point : cloud->points) {
         int u, v;
-        pcl2pxl(point.z, point.y, point.x, u, v);
+        convert_pointclouds_to_rgb(point.z, point.y, point.x, u, v); //x and y axis are swapped for Seyond's lidar /////
 
         if (u >= 0 && u < latest_image.cols && v >= 0 && v < latest_image.rows) {
             cv::Vec3b color_bgr = latest_image.at<cv::Vec3b>(v, u);
@@ -81,25 +105,4 @@ void synchronized_callback(
 }
 
 
-    void pcl2pxl(double x, double y, double z, int& u, int& v) {
-        // Camera intrinsic parameters
-        double fx = 1527.58;  //focal_length in x
-        double fy = 1550.17;  //focal_length in y;
-        double cx = 970.83; //CX
-        double cy = 731.92; //CY
-
-        // Extrinsic parameters
-        Eigen::Matrix3d R_lc;
-        R_lc << 0, 1, 0,
-                0, 0, -1,
-                1, 0, 0;
-
-        Eigen::Vector3d t(0.0, 0.0, 0.05);
-        Eigen::Vector3d P_l(x, y, z);
-        Eigen::Vector3d P_c = R_lc * (P_l + t);
-
-        // Projection
-        u = static_cast<int>((fx * P_c[0] / P_c[2]) + cx);
-        v = static_cast<int>((fy * P_c[1] / P_c[2]) + cy);
-    }
 };

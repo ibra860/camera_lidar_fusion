@@ -1,5 +1,6 @@
 #include "../include/fusion.hpp"
 
+
 int main(int argc, char** argv) {
     // Initialize ROS2
     rclcpp::init(argc, argv);
