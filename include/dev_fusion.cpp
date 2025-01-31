@@ -9,9 +9,10 @@ and the topic names for the point cloud input,
 camera image input, and colored point cloud output.
 
 
+
+COMPLETE THE REST OF THE LOO
+
 */
-
-
 
 
 

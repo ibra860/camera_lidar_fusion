@@ -100,7 +100,8 @@ void synchronized_callback(
     // Convert PCL back to ROS PointCloud2
     sensor_msgs::msg::PointCloud2 output_msg;
     pcl::toROSMsg(*colored_cloud, output_msg);
-    output_msg.header = pointcloud_msg->header;
+    output_msg.header.frame_id = pointcloud_msg->header.frame_id;
+    output_msg.header.stamp = this->get_clock()->now();
     pointcloud_publisher_->publish(output_msg);
 }
 
