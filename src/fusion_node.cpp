@@ -77,6 +77,7 @@ void synchronized_callback(
     sensor_msgs::msg::PointCloud2 output_msg;
     pcl::toROSMsg(*colored_cloud, output_msg);
     output_msg.header = pointcloud_msg->header;
+    output_msg.header.stamp = rclcpp::Clock().now();
     pointcloud_publisher_->publish(output_msg);
 }
 
