@@ -22,7 +22,7 @@ SensorFusionNode::SensorFusionNode()
     : Node("sensor_fusion_node") {
     
     // Create publishers and subscribers
-    pointcloud_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/colored_point", 10); //pointcloud2 output
+    pointcloud_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>(output_topic_, 10); //pointcloud2 output
     
     pointcloud_sub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::PointCloud2>>(this, pointcloud_topic_); //pointcloud2
     image_sub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::Image>>(this, image_topic_); //image
@@ -35,7 +35,7 @@ SensorFusionNode::SensorFusionNode()
 
 
 //Load Parameters
-void FusionNode::load_parameters() {
+void SensorFusionNode::load_parameters() {
 
 /*
  * @brief declear and get parametes. will be loaded from launch file
@@ -63,6 +63,7 @@ void FusionNode::load_parameters() {
     // Extrinsic Parameters
     std::vector<double> R_vals, t_vals;
     this->declare_parameter("transform.R_lc", std::vector<double>{0,1,0,0,0,-1,1,0,0}); //will be transformed to matrix3d
+
     this->declare_parameter("transform.t", std::vector<double>{0.0, 0.0, 0.05}); //will be transformed to vector3d
 
     this->get_parameter("transform.R_lc", R_vals);

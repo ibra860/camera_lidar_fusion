@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>pointcloud_rgb_transform</name>
+  <name>camera_lidar_fusion</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
   <maintainer email="ibrahim@qltyss.com">ibrahim</maintainer>

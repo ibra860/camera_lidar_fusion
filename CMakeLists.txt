@@ -68,6 +68,12 @@ install(TARGETS camera_stream_node
   DESTINATION lib/${PROJECT_NAME}
 )
 
+install(DIRECTORY
+  launch
+  config
+  DESTINATION share/${PROJECT_NAME}
+)
+
 # Enable testing
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)

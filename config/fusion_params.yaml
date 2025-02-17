@@ -1,0 +1,14 @@
+/**:
+  ros__parameters:
+    topic:
+      pointcloud_in: "/iv_points"
+      camera_image_in: "/cam"
+      pointcloud_out: "/colored_point"
+    camera:
+      fx: 1527.58
+      fy: 1550.17
+      cx: 970.83
+      cy: 731.92
+    transform:
+      R_lc: [0.0, 1.0, 0.0, 0.0, 0.0, -1.0, 1.0, 0.0, 0.0]  # Use decimal points for doubles
+      t: [0.0, 0.0, 0.05]
