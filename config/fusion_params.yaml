@@ -10,5 +10,8 @@
       cx: 970.83
       cy: 731.92
     transform:
-      R_lc: [0.0, 1.0, 0.0, 0.0, 0.0, -1.0, 1.0, 0.0, 0.0]  # Use decimal points for doubles
+      R_lc: [0.0, 1.0, 0.0, 
+            0.0, 0.0, -1.0, 
+            1.0, 0.0, 0.0]  # Use decimal points for doubles
+            
       t: [0.0, 0.0, 0.05]
