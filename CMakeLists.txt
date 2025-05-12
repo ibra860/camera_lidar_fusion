@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(pointcloud_rgb_transform)
+project(camera_lidar_fusion)
 
 # Specify C++ standard
 set(CMAKE_CXX_STANDARD 17)
@@ -16,11 +16,11 @@ find_package(OpenCV REQUIRED)
 find_package(image_transport REQUIRED)
 
 # Add executable
-add_executable(pointcloud_rgb_transform src/fusion_node.cpp)
+add_executable(camera_lidar_fusion src/fusion_node.cpp)
 add_executable(camera_stream_node src/camera_stream_node.cpp)
 
 # Link libraries and dependencies
-ament_target_dependencies(pointcloud_rgb_transform
+ament_target_dependencies(camera_lidar_fusion
   rclcpp
   sensor_msgs
   cv_bridge
@@ -34,13 +34,13 @@ ament_target_dependencies(camera_stream_node
 )
 
 # Include directories
-target_include_directories(pointcloud_rgb_transform PUBLIC
+target_include_directories(camera_lidar_fusion PUBLIC
   ${PCL_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
 )
 
 # Link PCL and OpenCV libraries
-target_link_libraries(pointcloud_rgb_transform
+target_link_libraries(camera_lidar_fusion
   ${PCL_LIBRARIES}
   ${OpenCV_LIBRARIES}
 )
@@ -59,13 +59,19 @@ target_link_libraries(camera_stream_node
 
 
 # Install rules
-install(TARGETS pointcloud_rgb_transform
+install(TARGETS camera_lidar_fusion
   DESTINATION lib/${PROJECT_NAME}
 )
 
 # Install rules
 install(TARGETS camera_stream_node
   DESTINATION lib/${PROJECT_NAME}
+)
+
+install(DIRECTORY
+  launch
+  config
+  DESTINATION share/${PROJECT_NAME}
 )
 
 # Enable testing

@@ -1,23 +1,11 @@
 {
     "python.autoComplete.extraPaths": [
-        "/home/ibrahim/dobot_ws/install/warehouse_ros_mongo/local/lib/python3.10/dist-packages",
-        "/home/ibrahim/dobot_ws/install/servo_action/lib/python3.10/site-packages",
-        "/home/ibrahim/dobot_ws/install/dobot_bringup_v3/lib/python3.10/site-packages",
-        "/home/ibrahim/dobot_ws/install/dobot_msgs_v3/local/lib/python3.10/dist-packages",
-        "/home/ibrahim/dobot_ws/install/dobot_moveit/lib/python3.10/site-packages",
-        "/home/ibrahim/dobot_ws/install/dobot_demo/lib/python3.10/site-packages",
         "/home/ibrahim/qssSimulation/install/sjtu_drone_control/lib/python3.10/site-packages",
         "/home/ibrahim/qssSimulation/install/sjtu_drone_bringup/lib/python3.10/site-packages",
         "/opt/ros/humble/lib/python3.10/site-packages",
         "/opt/ros/humble/local/lib/python3.10/dist-packages"
     ],
     "python.analysis.extraPaths": [
-        "/home/ibrahim/dobot_ws/install/warehouse_ros_mongo/local/lib/python3.10/dist-packages",
-        "/home/ibrahim/dobot_ws/install/servo_action/lib/python3.10/site-packages",
-        "/home/ibrahim/dobot_ws/install/dobot_bringup_v3/lib/python3.10/site-packages",
-        "/home/ibrahim/dobot_ws/install/dobot_msgs_v3/local/lib/python3.10/dist-packages",
-        "/home/ibrahim/dobot_ws/install/dobot_moveit/lib/python3.10/site-packages",
-        "/home/ibrahim/dobot_ws/install/dobot_demo/lib/python3.10/site-packages",
         "/home/ibrahim/qssSimulation/install/sjtu_drone_control/lib/python3.10/site-packages",
         "/home/ibrahim/qssSimulation/install/sjtu_drone_bringup/lib/python3.10/site-packages",
         "/opt/ros/humble/lib/python3.10/site-packages",

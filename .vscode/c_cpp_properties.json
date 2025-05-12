@@ -6,10 +6,9 @@
         "limitSymbolsToIncludedHeaders": false
       },
       "includePath": [
-        "/home/ibrahim/dobot_ws/install/warehouse_ros_mongo/include/**",
-        "/home/ibrahim/dobot_ws/install/dobot_msgs_v3/include/**",
         "/home/ibrahim/qssSimulation/install/sjtu_drone_description/include/**",
         "/opt/ros/humble/include/**",
+        "/home/ibrahim/Desktop/fusion_cpp/src/pointcloud_rgb_transform/include/**",
         "/usr/include/**"
       ],
       "name": "ROS",
