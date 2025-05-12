@@ -1,9 +1,9 @@
 /**:
   ros__parameters:
     topic:
-      pointcloud_in: "/iv_points"
-      camera_image_in: "/cam"
-      pointcloud_out: "/colored_point"
+      pointcloud_in: "/iv_points" #your input pointcloud topic
+      camera_image_in: "/cam" #your camera topic
+      pointcloud_out: "/colored_point" #your output pointcloud topic
     camera:
       fx: 1527.58
       fy: 1550.17
