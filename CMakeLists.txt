@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(camera_lidar_fusion)
+project(ros2_camera_lidar_fusion)
 
 # Specify C++ standard
 set(CMAKE_CXX_STANDARD 17)
