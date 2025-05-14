@@ -9,6 +9,11 @@
       fy: 1550.17
       cx: 970.83
       cy: 731.92
+
+    # LiDAR_x == Camera_z
+    # LiDAR_y == - Camera_x (negative x)
+    # LiDAR_z == - Camera_y (negative y)
+    # Lidar_x relative to cam_x cam_y cam_z vertically to each column and so on
     transform:
       R_lc: [0.0, 1.0, 0.0, 
             0.0, 0.0, -1.0, 
